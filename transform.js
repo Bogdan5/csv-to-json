@@ -1,6 +1,7 @@
 const https = require('https');
 const path = require('path');
 const fs = require('fs');
+const csv = require('csv-parser');
 
 let url = 'https://prod-edxapp.edx-cdn.org/assets/';
 url += 'courseware/v1/07d100219da1a726dad5eddb090fa215/';
@@ -13,7 +14,6 @@ const fetchCSV = (urlA, callback) => {
       rawData += chunk;
     });
     response.on('end', (response) => {
-      console.log(rawData.split('/n')[0]);
       console.log('End stream');
       callback(null, rawData);
     });
@@ -31,14 +31,12 @@ fetchCSV(url, (error, rawData) => {
 });
 
 var csvData = [];
-// fs.createReadStream(req.file.path)
-//     .pipe(parse({ delimiter: ':' }))
-//     .on('data', function (csvrow) {
-//         console.log(csvrow);
-//         //do something with csvrow
-//         csvData.push(csvrow);
-//       })
-//     .on('end', function () {
-//       //do something wiht csvData
-//       console.log(csvData);
-//     });
+fs.createReadStream(path.join(__dirname, 'file.html'))
+  .pipe(csv())
+  .on('data', function (data) {
+    csvData.push(data);
+  })
+  .on('end', function () {
+    console.log('Writing file');
+    fs.writeFileSync(path.join(__dirname, 'csv.txt'), csvData);
+  });
