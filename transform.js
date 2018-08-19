@@ -36,5 +36,5 @@ csv()
 .fromFile(csvFilePath)
 .then((jsonObj) => {
   // it was necessary to stringify in order to avoid the [object, Object] format
-  fs.writeFileSync(path.join(__dirname, 'csv.html'), JSON.stringify(jsonObj));
+  fs.writeFileSync(path.join(__dirname, 'csv.html'), JSON.stringify(jsonObj, null, 2));
 });
